@@ -1,0 +1,170 @@
+import java.util.Scanner;
+
+public class Game {
+    public static char[][][] map1 = {
+            // === ЭТАЖ 0: "Обрыв" (5x6) ===
+            {
+                    {'#', '#', '#', '#', '_', 'U'},
+                    {'#', '_', '_', '_', '_', '#'},
+                    {'#', '_', '#', '#', '#', '#'},
+                    {'#', '_', '_', '_', '#', '#'},
+                    {'P', '_', '#', '#', '#', '#'}
+            },
+            // === ЭТАЖ 1: "Тоннель" (3x8) ===
+            {
+                    {'_', '_', '_', '_', '_', 'D', '_', '_'},
+                    {'#', '_', '#', '#', '#', '#', '#', '+'},
+                    {'U', '_', '_', '_', '_', '#', '#', '#'}
+            },
+            // === ЭТАЖ 2: "Финал" (4x4) ===
+            {
+                    {'#', '#', 'F', '#'},
+                    {'#', '#', 'X', '#'},
+                    {'D', '_', '_', '#'},
+                    {'#', '#', '#', '#'}
+            }
+    };
+
+    static int floor = 0, y = -1, x = -1, torch = 30, pickDurability = 3;
+    static final String torchOut = "Холод башни проник в самое сердце. Двигаться больше нет сил.";
+    static final String winMsg = "Щелчок механизма прозвучал как музыка. Дверь открыта, вы свободны!";
+
+    static void findPlayer() {
+        for (int f = 0; f < map1.length; f++) {
+            for (int r = 0; r < map1[f].length; r++) {
+                for (int c = 0; c < map1[f][r].length; c++) {
+                    if (map1[f][r][c] == 'P') {
+                        floor = f;
+                        y = r;
+                        x = c;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    static boolean inBounds(int f, int r, int c) {
+        return f >= 0 && f < map1.length && r >= 0 && r < map1[f].length && c >= 0 && c < map1[f][r].length;
+    }
+    static void fall() {
+        System.out.println("Вы упали в бездну...");
+        System.exit(0);
+    }
+    static void move(char d) {
+        int ny = y, nx = x;
+        switch(d) {
+            case 'w': ny--; break;
+            case 's': ny++; break;
+            case 'a': nx--; break;
+            case 'd': nx++; break;
+            default: return;
+        }
+
+        if (!inBounds(floor, ny, nx)) fall();
+        char t = map1[floor][ny][nx];
+
+        if (t == '#' || t == 'X') return;
+        y = ny; x = nx; torch--;
+
+        if (t == 'F') {
+            System.out.println(winMsg);
+            System.exit(0);
+        }
+
+        if (t == '+') {
+            torch += 10;
+            map1[floor][ny][nx] = '_';
+        }
+    }
+    static void findStairs(char s) {
+        for (int r = 0; r < map1[floor].length; r++) {
+            for (int c = 0; c < map1[floor][r].length; c++) {
+                if ((map1[floor][r][c]) == s) {
+                    y = r;
+                    x = c;
+                    return;
+                }
+            }
+        }
+    }
+    static void useStairs(char d) {
+        int ny = y, nx = x;
+        switch(d) {
+            case 'w': ny--; break;
+            case 's': ny++; break;
+            case 'a': nx--; break;
+            case 'd': nx++; break;
+            default: return;
+        }
+
+        if (!inBounds(floor, ny, nx)) fall();
+        char c = map1[floor][ny][nx];
+
+        if (c == 'U' && floor + 1 < map1.length) {
+            floor++;
+            findStairs('D');
+            torch--;
+        } else if (c == 'D' && floor > 0) {
+            floor--;
+            findStairs('U');
+            torch--;
+        }
+
+    }
+    static void printHUD() {
+        String[] floorNames = {"Обрыв", "Тоннель", "Финал"};
+        String name = floorNames[floor];
+        System.out.println("Статус: Этаж: " + floor + " (" + name + ")");
+        System.out.println("Позиция[Y:" + y + ", X:" + x + ']');
+        System.out.println("Факел: " + torch);
+        System.out.println("Прочность кирки: " + pickDurability);
+    }
+    static void printMap() {
+        for (int r = 0; r < map1[floor].length; r++) {
+            for (int c = 0; c < map1[floor][r].length; c++) {
+                System.out.print((r == y && c == x) ? "[P]" : "[" + map1[floor][r][c] + "]");
+            }
+            System.out.println();
+        }
+        System.out.println("Введите команду: ");
+    }
+
+    static void unlock(char d) {
+        int ny = y, nx = x;
+        switch(d) {
+            case 'w': ny--; break;
+            case 's': ny++; break;
+            case 'a': nx--; break;
+            case 'd': nx++; break;
+            default: return;
+        }
+
+        if (!inBounds(floor, ny, nx)) fall();
+        char t = map1[floor][ny][nx];
+
+        if (t == 'X' && torch >= 5) {
+            map1[floor][ny][nx] = '_';
+            torch -= 5;
+        }
+    }
+
+    public static void main(String[] args) {
+        findPlayer();
+        Scanner scanner = new Scanner(System.in);
+        while (torch > 0) {
+            printHUD(); printMap();
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) continue;
+
+            char cmd = input.charAt(0);
+            if (cmd == 'e' && input.length() > 1) {
+                useStairs(input.charAt(1));
+            } else if (cmd == 'k' && input. length() > 1) {
+                unlock(input.charAt(1));
+            } else {
+                move(cmd);
+            }
+        }
+        System.out.println(torchOut);
+    }
+}
