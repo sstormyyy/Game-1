@@ -1,49 +1,68 @@
-#The game "Escape from the Dark Tower"
-Legend:
-You find yourself in the ancient Tower of Chaos. The architecture of this place
-is insane: the floors hang in the void, the corridors are narrowed to a crawl, and
-they expand into huge halls.
-You have a burning torch in your hand. Your goal is to climb to the top and find
-an exit before the light goes out.
-The path to freedom is blocked by the Barrier Guardian (X), which can only be
-overcome using the unique skill of your class.
+#Игра "Побег из Тёмной Башни"
+Легенда:
+Вы оказываетесь в древней Башне Хаоса. Архитектура этого места
+безумна: этажи висят в пустоте, коридоры сужаются до предела, и
+они расширяются в огромные залы.
+В руке у вас горящий факел. Ваша цель — забраться на вершину и найти
+выход, прежде чем погаснет свет.
+Путь к свободе заблокирован Стражем Барьера (X), который можно преодолеть только
+используя уникальный навык вашего класса.
 
-Symbols (Map Legend):
-• P — Player (Player). Your current position.
-• _ — Floor. A free cell where you can take a step.
-• # — Wall. An impassable obstacle.
-• U (Up) — Entrance to the upper floor. A staircase leading to the next floor. To use it, you need to approach it and interact with it.
-• D (Down) — Entrance to the lower floor. A staircase leading to the previous floor. Also is the point of appearance when climbing from below.
-• + — Oil. Bonus, restoring the torch charge (+10).
-• F — Finish. Exit point (victory).
-• X — Barrier. A special obstacle before the exit (Castle / Blockage / Abyss — depends on the option).
+Символы (Легенда карты):
+• P — Игрок (Player). Ваше текущее положение.
 
-Resource "Torch":
-• Enter the variable int torch = 30;.
-• Any normal step or staircase (special skills consume more) reduces the charge by 1.
-• If the charge is 0 - the game ends with a message that you will have in the option.
-• On the map there are symbols + (Oil). If you step on such symbol: torch += 10, and the symbol itself disappears from the map.
+• _ — Этаж. Свободная ячейка, куда можно сделать шаг.
 
-Navigation:
-• Commands: w, a, s, d (north, west, south, east).
-• Stairs (U/D): moving up or down the stairs does not happen automatically. When standing on a stair (U) tile, the player must press the E keyto move to the next floor. The x, y coordinates are saved.
-• Interaction (E):
-o Moving between floors does not happen automatically when stepping on them.
-o To use the stairs, you need to stand next to it (on the neighboring square).
-o Enter the command e (enter), then specify the direction to
-the stairs.
-• Input mode: The game is strictly step-by-step.
-• Information panel (HUD): after each step, before the map is drawn, the program must display the status:
-o The current floor (for example: Floor 1: Tunnel).
-o The player's coordinates (for example: [Y: 2, X: 4]).
-o The current torch charge.
+• # — Стена. Непреодолимое препятствие.
 
-Option A: "The Rogue" (The Locksmith)
-For you, X is a complex lock that requires fine work.
-1. Inventory: your character has lockpicks (boolean hasLockpick =
-true) by default.
-2. Mechanics:
-• Added command K (key/lockpick) + direction.
-• If there is an X in the specified direction, you can pick it.
-• Cost: picking requires time. The action consumes 5 torch units.
-• Result: X turns into a floor, and the path is open.
+• U (Вверх) — Вход на верхний этаж. Лестница, ведущая на следующий этаж. Чтобы воспользоваться ею, нужно подойти и взаимодействовать с ней.
+
+• D (Вниз) — Вход на нижний этаж. Лестница, ведущая на предыдущий этаж. Также это точка появления при подъеме снизу.
+
+• + — Масло. Бонус, восстанавливающий заряд факела (+10).
+
+• F — Финиш. Точка выхода (победа).
+
+• X — Препятствие. Особое препятствие перед выходом (Замок / Блокада / Пропасть — зависит от опции).
+
+Ресурс «Факел»:
+• Введите переменную int torch = 30;.
+
+• Любая обычная ступенька или лестница (специальные навыки расходуют больше) уменьшает заряд на 1.
+• Если заряд равен 0 — игра заканчивается сообщением, которое вы увидите в опции.
+
+• На карте есть символы + (Масло). Если наступить на такой символ: факел += 10, а сам символ исчезает с карты.
+
+Навигация:
+• Команды: w, a, s, d (север, запад, юг, восток).
+
+• Лестницы (U/D): движение вверх или вниз по лестнице не происходит автоматически. Находясь на клетке лестницы (U), игрок должен нажать клавишу E, чтобы перейти на следующий этаж. Координаты x, y сохраняются.
+
+• Взаимодействие (E):
+o Перемещение между этажами не происходит автоматически при наступлении на них.
+o Чтобы воспользоваться лестницей, нужно встать рядом с ней (на соседней клетке).
+
+o Введите команду e (Enter), затем укажите направление к
+лестнице.
+
+• Режим ввода: Игра строго пошаговая.
+
+• Информационная панель (HUD): после каждого шага, перед отрисовкой карты, программа должна отображать статус:
+o Текущий этаж (например: Этаж 1: Туннель).
+o Координаты игрока (например: [Y: 2, X: 4]).
+o Текущий заряд факела.
+
+Вариант A: «Разбойник» (Взломщик)
+Для вас X — это сложный замок, требующий тонкой работы.
+
+1. Инвентарь: по умолчанию у вашего персонажа есть отмычки (логическое значение hasLockpick =
+true).
+
+2. Механика:
+• Добавлена ​​команда K (ключ/отмычка) + направление.
+
+• Если в указанном направлении есть крестик, вы можете его открыть.
+
+• Стоимость: открытие замка требует времени. Действие расходует 5 единиц факела.
+
+• Результат: крестик превращается в пол, и путь открывается.
